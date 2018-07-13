@@ -19,15 +19,20 @@ Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
 
+// Only auth user can view the below
+Route::group(['middleware' => 'auth'], function() {
 
-Auth::routes();
+    Route::resource('qrcodes', 'QrcodeController');
 
-Route::get('/home', 'HomeController@index');
+    Route::resource('transactions', 'TransactionController');
 
-Route::resource('qrcodes', 'QrcodeController');
+    Route::resource('users', 'UserController');
 
-Route::resource('roles', 'RoleController');
+    Route::resource('accounts', 'AccountController');
 
-Route::resource('transactions', 'TransactionController');
+    Route::resource('accountHistories', 'AccountHistoryController');
 
-Route::resource('users', 'UserController');
+    Route::get('/users', 'UserController@index')->name('users.index')->middleware('checkmoderator');
+
+    Route::resource('roles', 'RoleController')->middleware('checkadmin');
+});

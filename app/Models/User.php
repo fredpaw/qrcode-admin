@@ -60,5 +60,16 @@ class User extends Model
         
     ];
 
+    public function Transactions() {
+        return $this->hasMany('App\Models\Transaction');
+    }
+
+    public function role() {
+        return $this->belongsTo('App\Models\Role');
+    }
+
+    public function qrcodes() {
+        return $this->hasMany('App\Models\Qrcode');
+    }
     
 }

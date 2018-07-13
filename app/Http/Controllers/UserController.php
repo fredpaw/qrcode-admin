@@ -8,6 +8,7 @@ use App\Repositories\UserRepository;
 use App\Http\Controllers\AppBaseController;
 use Illuminate\Http\Request;
 use Flash;
+use Illuminate\Support\Facades\Hash;
 use Prettus\Repository\Criteria\RequestCriteria;
 use Response;
 
@@ -81,7 +82,11 @@ class UserController extends AppBaseController
             return redirect(route('users.index'));
         }
 
-        return view('users.show')->with('user', $user);
+        $qrcodes = $user->qrcodes;
+
+        $transactions = $user->transactions;
+
+        return view('users.show', compact('user', 'qrcodes', 'transactions'));
     }
 
     /**
@@ -122,11 +127,15 @@ class UserController extends AppBaseController
             return redirect(route('users.index'));
         }
 
+        if($request['password']) {
+            $request['password'] = Hash::make($request['password']);
+        }
+
         $user = $this->userRepository->update($request->all(), $id);
 
         Flash::success('User updated successfully.');
 
-        return redirect(route('users.index'));
+        return redirect(route('users.show', compact('user')));
     }
 
     /**
